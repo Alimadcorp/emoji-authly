@@ -1,0 +1,14 @@
+body{
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    animation: color 7.5s infinite;    
+}
+
+@keyframes color {
+    0% {background: #808080;}
+    25% {background: #40bf9f;}
+    50% {background: #00ffbf;}
+    75% {background: #40bf9f;}
+    100% {background: #808080;}
+}
