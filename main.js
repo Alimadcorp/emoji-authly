@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
@@ -8,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(session({
-  secret: 'keyboard cat', // better keep it secret and prolly change before prod and prolly use env vars
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: false
 }));
