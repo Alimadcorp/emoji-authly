@@ -1,47 +1,66 @@
 const express = require('express');
-const { useSyncExternalStore } = require('react');
+const bcrypt = require('bcrypt');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+
 const app = express();
 
-app.get('/', (req, res) => res.send('Hello'));
-app.listen(3000);
 app.use(express.json());
-app.post('/submit', (req, res) => {
-    const data = req.body;
-})
+app.use(cookieParser());
+app.use(session({
+  secret: 'keyboard cat', // better keep it secret and prolly change before prod and prolly use env vars
+  resave: false,
+  saveUninitialized: false
+}));
 
-const user = {}
+const users = {};
 users['aaa'] = 'pass123';
 
-const hash = await bcrypt.hash('mpw', 10);
+(async () => {
+  const hash = await bcrypt.hash('mpw', 10);
+  console.log('Hash for mpw:', hash);
 
-users[username] = await bcrypt.hash(password, 10);
+  let username = "artemis";
+  let password = "iamcool";
 
-await bcrypt.compare(password, users[username])
+  users[username] = await bcrypt.hash(password, 10);
+  console.log('Stored users:', users);
 
-req.session.userId = user.id;
-
-if (req.session.userId) {
-    res.render('profile');
-} else {
-    res.redirect('/login')
-}
-
-if (!req.session.userId) {
-    res.redirect('/login');
-}
-
-req.session.destroy();
-
-req.cookies['connect.sid']
+  const match = await bcrypt.compare(password, users[username]);
+  console.log('Password match?', match);
+})();
 
 function requireLogin(req, res, next) {
-  if (!req.session.userId) {
-    return res.redirect('/login');
-  }
+  if (!req.session.userId) return res.redirect('/login');
   next();
 }
-app.use('/profile', requireLogin);
 
 function isLoggedIn(req) {
   return !!req.session.userId;
 }
+
+app.get('/', (req, res) => res.send('Uhhh'));
+
+app.post('/submit', async (req, res) => {
+  const { username, password } = req.body;
+  if (!users[username]) return res.status(404).send('User not found');
+  const match = await bcrypt.compare(password, users[username]);
+  if (match) {
+    req.session.userId = username;
+    res.send('Womp womp. Logged in');
+  } else {
+    res.status(401).send('Well well well, look who forgot their password');
+  }
+});
+
+app.get('/profile', requireLogin, (req, res) => {
+  res.send(`Welcome ${req.session.userId} ;3`);
+});
+
+app.get('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.send('Someone kicks you out :skulleyirl:');
+  });
+});
+
+app.listen(3000, () => console.log('Server running on 3000'));
