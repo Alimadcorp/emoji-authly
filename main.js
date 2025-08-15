@@ -29,3 +29,19 @@ if (req.session.userId) {
 if (!req.session.userId) {
     res.redirect('/login');
 }
+
+req.session.destroy();
+
+req.cookies['connect.sid']
+
+function requireLogin(req, res, next) {
+  if (!req.session.userId) {
+    return res.redirect('/login');
+  }
+  next();
+}
+app.use('/profile', requireLogin);
+
+function isLoggedIn(req) {
+  return !!req.session.userId;
+}
