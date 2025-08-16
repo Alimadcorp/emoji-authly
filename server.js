@@ -40,7 +40,9 @@ app.use(
 
 let pages = {
   index: fs.readFileSync("./index.html", "utf-8"),
-  script: fs.readFileSync("./script.js", "utf-8")
+  style: fs.readFileSync("./style.css", "utf-8"),
+  script: fs.readFileSync("./script.js", "utf-8"),
+  // favicon: fs.readFileSync("./favicon.png", "base64")
 };
 // We are having to manually load and provide pages because this is the best way to keep the authentication secure
 // We will mimic a static github hosting through express
@@ -49,10 +51,15 @@ app.get("/index", (req, res) => res.send(pages.index)); // also main page
 app.get("/index.html", (req, res) => res.send(pages.index)); // also also main page
 app.get("/script", (req, res) => res.send(pages.script)); // the script
 app.get("/script.js", (req, res) => res.send(pages.script)); // also the script
+app.get("/style", (req, res) => res.send(pages.style)); // the style
+app.get("/style.css", (req, res) => res.send(pages.style)); // also the style
+// app.get("/favicon.ico", (req, res) => { res.send(pages.favicon); }); // the icon
 
 async function signup(username, password) {
+  if(users[username]) return "User already exists";
   users[username] = await bcrypt.hash(password, 10);
   saveSavedUsers();
+  return false;
 }
 
 // Returns an array that goes: [ verdict (boolean), reason_of_failure (string) ]
@@ -61,6 +68,7 @@ async function login(username, password) {
     return [false, "User not found"];
   }
   const match = await bcrypt.compare(password, users[username]);
+  console.log(match, username, password);
   if (match) {
     return [true, ""];
   } else {
@@ -81,15 +89,25 @@ function isLoggedIn(req) {
   return !!req.session.userId;
 }
 
-app.post("/submit", async (req, res) => {
-  const { username, password } = req.body;
-  if (!users[username]) return res.status(404).send("User not found");
-  const match = await bcrypt.compare(password, users[username]);
-  if (match) {
+app.get("/signup", async (req, res) => {
+  const { username, password } = req.query;
+  const l = await signup(username, password);
+  if (l) {
+    res.send(l);
+  } else {
+    res.status(201).send("Created");
+  }
+});
+
+app.get("/login", async (req, res) => {
+  const { username, password } = req.query;
+  const l = await login(username, password);
+  console.log(l);
+  if (l[0]) {
     req.session.userId = username;
     res.send("Womp womp. Logged in");
   } else {
-    res.status(401).send("Well well well, look who forgot their password");
+    res.status(401).send(l[1]);
   }
 });
 
