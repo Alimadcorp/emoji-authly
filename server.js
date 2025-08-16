@@ -40,7 +40,8 @@ app.use(
 
 let pages = {
   index: fs.readFileSync("./index.html", "utf-8"),
-  style: fs.readFileSync("./style.css", "utf-8"),
+  app: fs.readFileSync("./app.html", "utf-8"),
+  //style: fs.readFileSync("./style.css", "utf-8"),
   script: fs.readFileSync("./script.js", "utf-8"),
   // favicon: fs.readFileSync("./favicon.png", "base64")
 };
@@ -53,9 +54,24 @@ app.get("/script", (req, res) => res.send(pages.script)); // the script
 app.get("/script.js", (req, res) => res.send(pages.script)); // also the script
 app.get("/style", (req, res) => res.send(pages.style)); // the style
 app.get("/style.css", (req, res) => res.send(pages.style)); // also the style
+app.get("/app.html", (req, res) => {
+  if(req.session.userId){
+    res.send(pages.app);
+  } else {
+    res.redirect("/");
+  }
+});
+app.get("/app", (req, res) => {
+  if(req.session.userId){
+    res.send(pages.app);
+  } else {
+    res.redirect("/");
+  }
+});
 // app.get("/favicon.ico", (req, res) => { res.send(pages.favicon); }); // the icon
 
 async function signup(username, password) {
+  if(!username || !password) return "duh";
   if(users[username]) return "User already exists";
   users[username] = await bcrypt.hash(password, 10);
   saveSavedUsers();

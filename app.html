@@ -1,7 +1,51 @@
 <!DOCTYPE html>
 <html>
-    <head>
+  <head>
+    <title>Emoji Authly</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="favicon.ico" />
+  </head>
+  <body>
+    <style>
+      body {
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        animation: color 7.5s infinite;
+      }
 
-    </head>
-    <body></body>
+      * {
+        margin: 5px;
+        width: 200px;
+        background-color: #00ffbf;
+        color: black;
+      }
+
+      @keyframes color {
+        0% {
+          background: #808080;
+        }
+        25% {
+          background: #40bf9f;
+        }
+        50% {
+          background: #00ffbf;
+        }
+        75% {
+          background: #40bf9f;
+        }
+        100% {
+          background: #808080;
+        }
+      }
+    </style>
+    <div id="main">
+      <h2>Welcome to the app!!!</h2>
+      <button onclick="logout()">Logout</button>
+      <p id="whoami"></p>
+      <p>Theres nothing here yet :D</p>
+      <hr>
+    </div>
+  </body>
+  <script src="script.js"></script>
 </html>

@@ -3,15 +3,50 @@
   <head>
     <title>Emoji Authly</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="favicon.ico" />
   </head>
   <body>
+    <style>
+      body {
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        animation: color 7.5s infinite;
+        color: white;
+      }
+
+      * {
+        margin: 10px;
+        width: 200px;
+      }
+
+      @keyframes color {
+        0% {
+          background: #0c0c0c;
+        }
+        25% {
+          background: #153e34;
+        }
+        50% {
+          background: #16302a;
+        }
+        75% {
+          background: #203c35;
+        }
+        100% {
+          background: #121212;
+        }
+      }
+    </style>
     <div id="main">
       <h2>hii</h2>
-      <input type="text" id="username" placeholder="Username" /><br>
-      <input type="text" id="password" placeholder="Password" /><br>
+      <input type="text" id="username" placeholder="Username" name="username"/><br />
+      <input type="password" id="password" placeholder="Password" name="password"/><br />
+      <label for="up" id="gorp"></label>
+      <input type="range" id="up" name="up" min="0" max="10" disabled><br/>
+      <input type="range" id="below"><br/>
       <button onclick="login()">Login</button>
       <button onclick="signup()">Sign Up</button>
-      <button onclick="signup()">Logout</button>
       <p id="whoami"></p>
     </div>
   </body>
