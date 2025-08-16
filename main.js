@@ -3,11 +3,13 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+//const cors = require('cors');
 
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+//app.user(cors());
 app.use(session({
   secret: process.env.SECRET,
   resave: false,
@@ -18,8 +20,8 @@ const users = {};
 users['aaa'] = 'pass123';
 
 (async () => {
-  const hash = await bcrypt.hash('mpw', 10);
-  console.log('Hash for mpw:', hash);
+  const hash = await bcrypt.hash('mypassword', 10);
+  console.log('Hash for mypassword:', hash);
 
   let username = "artemis";
   let password = "iamcool";
